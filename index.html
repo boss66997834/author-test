@@ -255,6 +255,7 @@ function finish(){
     <div class="sharebox" id="sharebox"></div>
     <div id="posterbox"></div>
   `;
+  reportResult(name);
   show("p-result");
  }catch(e){
   const el=document.getElementById("p-result");
@@ -263,6 +264,9 @@ function finish(){
  }
 }
 
+function reportResult(name){
+  try{ new Image().src = '/api/track?from=' + encodeURIComponent('测出:'+name+'>'+CHANNEL+(CHAIN?'>'+CHAIN:'')); }catch(e){}
+}
 function shareURL(name){
   const base = location.origin && location.origin!=='null' ? location.origin+location.pathname : location.href.split('#')[0].split('?')[0];
   let url = base+'?from='+encodeURIComponent(name);
@@ -292,6 +296,7 @@ function renderHidden(mode){
     <div class="sharebox" id="sharebox"></div>
     <div id="posterbox"></div>
   `;
+  reportResult(name);
   show("p-result");
 }
 
