@@ -129,7 +129,7 @@
   <footer class="cc">
     © 2026 你是X人 · 文豪人格鉴定 v1.0 ｜ 作者：<span id="authorName">天下粮仓</span><br>
     <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a> 署名—非商业性使用—禁止演绎<br>
-    转载须署名，不得商用，不得改动后发布
+    转载须署名，不得商用，不得改动后发布<br>本站匿名统计访问与答题数据（不含任何个人信息），仅用于改进体验
   </footer>
 </div>
 <div class="toast" id="toast">已复制</div>
@@ -265,7 +265,13 @@ function finish(){
 }
 
 function reportResult(name){
-  try{ new Image().src = '/api/track?from=' + encodeURIComponent('测出:'+name+'>'+CHANNEL+(CHAIN?'>'+CHAIN:'')); }catch(e){}
+  FINISHED = true;
+  const meta = (function(){ try{
+    return '&lg=' + encodeURIComponent(navigator.language||'')
+      + '&sc=' + encodeURIComponent((screen?screen.width+'x'+screen.height:'') + '@' + (window.devicePixelRatio||1))
+      + '&tz=' + encodeURIComponent((Intl.DateTimeFormat().resolvedOptions().timeZone)||'');
+  }catch(e){ return ''; } })();
+  try{ new Image().src = '/api/track?from=' + encodeURIComponent('测出:'+name+'>'+CHANNEL+(CHAIN?'>'+CHAIN:'')) + '&uid=' + encodeURIComponent(UID) + '&t_s=' + Math.round((Date.now()-ENTER_T)/1000) + '&ev=result&r=' + encodeURIComponent(name) + '&ans=' + encodeURIComponent(answers.join(',')) + meta; }catch(e){}
 }
 function shareURL(name){
   const base = location.origin && location.origin!=='null' ? location.origin+location.pathname : location.href.split('#')[0].split('?')[0];
@@ -469,7 +475,27 @@ if(CHAIN){
   }catch(e){}
 }
 /* ---- 埋点回传（每次加载计一次 PV） ---- */
-try{ new Image().src = '/api/track?from=' + encodeURIComponent(CHANNEL + '>' + (CHAIN || '直访')); }catch(e){}
+const UID = (function(){ try{ let u=localStorage.getItem('xren_uid'); if(!u){ u='u'+Date.now().toString(36)+Math.random().toString(36).slice(2,8); localStorage.setItem('xren_uid',u); } return u; }catch(e){ return 'anon'; } })();
+const ENTER_T = Date.now();
+let FINISHED = false;
+function trackUrl(ev, extra){
+  const meta = (function(){
+    try{
+      return '&lg=' + encodeURIComponent(navigator.language||'')
+        + '&sc=' + encodeURIComponent((screen?screen.width+'x'+screen.height:'') + '@' + (window.devicePixelRatio||1))
+        + '&tz=' + encodeURIComponent((Intl.DateTimeFormat().resolvedOptions().timeZone)||'')
+        + '&rf=' + encodeURIComponent((document.referrer||'').slice(0,120));
+    }catch(e){ return ''; }
+  })();
+  return '/api/track?from=' + encodeURIComponent(CHANNEL + '>' + (CHAIN || '直访'))
+    + '&uid=' + encodeURIComponent(UID) + '&t_s=' + Math.round((Date.now()-ENTER_T)/1000)
+    + '&ev=' + ev + meta + (extra||'');
+}
+try{ new Image().src = trackUrl('enter'); }catch(e){}
+window.addEventListener('pagehide', function(){
+  if(FINISHED) return;
+  try{ if(navigator.sendBeacon) navigator.sendBeacon(trackUrl('exit')); else { new Image().src = trackUrl('exit'); } }catch(e){}
+});
 
 </script>
 </body>
