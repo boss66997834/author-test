@@ -33,8 +33,8 @@
   .nav button{flex:1;padding:12px;background:transparent;border:1px solid var(--line);color:var(--fg);border-radius:10px;font-family:inherit;font-size:15px;cursor:pointer;letter-spacing:2px}
   .nav button:disabled{opacity:.3;cursor:default}
   .card{margin-top:8px}
-  .ph{width:150px;height:150px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);margin:6px auto;display:block;background:var(--soft)}
-  .ph-fallback{width:150px;height:150px;border-radius:50%;border:2px solid var(--gold);margin:6px auto;display:flex;align-items:center;justify-content:center;font-size:52px;color:var(--gold);background:var(--soft)}
+  .ph{width:150px;height:200px;border-radius:10px;object-fit:cover;object-position:top;border:2px solid var(--gold);margin:6px auto;display:block;background:var(--soft)}
+  .ph-fallback{width:150px;height:200px;border-radius:10px;border:2px solid var(--gold);margin:6px auto;display:flex;align-items:center;justify-content:center;font-size:44px;color:var(--gold);background:var(--soft)}
   .title{font-size:40px;letter-spacing:6px;margin:14px 0 2px}
   .fullname{color:var(--dim);font-size:15px;letter-spacing:2px}
   .badges{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;margin:16px 0 4px}
@@ -65,7 +65,7 @@
   .toast{position:fixed;left:50%;bottom:12%;transform:translateX(-50%);background:var(--gold);color:#1a1408;padding:10px 22px;border-radius:999px;font-size:14px;letter-spacing:2px;opacity:0;transition:opacity .3s;pointer-events:none;font-family:"Noto Sans SC","Microsoft YaHei",sans-serif}
   .toast.show{opacity:1}
   .allhead{display:flex;align-items:center;gap:14px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:14px;margin:14px 0;text-align:left}
-  .allhead img,.allhead .phv{width:64px;height:64px;border-radius:50%;object-fit:cover;border:1px solid var(--gold);flex:0 0 auto;background:var(--soft);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:26px}
+  .allhead img,.allhead .phv{width:60px;height:78px;border-radius:8px;object-fit:cover;object-position:top;border:1px solid var(--gold);flex:0 0 auto;background:var(--soft);color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:24px}
   .allhead .t{font-size:22px;letter-spacing:2px}
   .allhead .f{color:var(--dim);font-size:13px}
   .hidden{display:none}
@@ -80,8 +80,8 @@
     .quotebox p{font-size:15.5px}
     .quotebox{padding:14px 15px}
     .btn{font-size:17px;padding:14px;letter-spacing:3px}
-    .ph,.ph-fallback{width:128px;height:128px}
-    .ph-fallback{font-size:44px}
+    .ph,.ph-fallback{width:120px;height:160px}
+    .ph-fallback{font-size:36px}
     .relrow b{font-size:16px}
     .relrow span{font-size:13px}
     .allcards .one .t{font-size:20px}
@@ -351,12 +351,17 @@ function drawPoster(name,o,url,img,qr){
     g.fillStyle='#9a958c'; g.font='25px "Noto Sans SC",sans-serif';
     g.fillText(o.full, 375, 285);
     if(img){
-      g.save(); g.beginPath(); g.arc(375,480,155,0,Math.PI*2); g.clip();
-      const scale=Math.max(310/img.width,310/img.height);
+      const PW=300,PH=390,PX=375-PW/2,PY=480-PH/2,RR=14;
+      g.save(); g.beginPath();
+      (function rr2(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();})(g,PX,PY,PW,PH,RR);
+      g.clip();
+      const scale=Math.max(PW/img.width,PH/img.height);
       const dw=img.width*scale, dh=img.height*scale;
-      g.drawImage(img,375-dw/2,480-dh/2,dw,dh);
+      g.drawImage(img,375-dw/2,PY+PH/2-dh/2,dw,dh);
       g.restore();
-      g.strokeStyle='#d4af6a'; g.lineWidth=4; g.beginPath(); g.arc(375,480,157,0,Math.PI*2); g.stroke();
+      g.strokeStyle='#d4af6a'; g.lineWidth=4; g.beginPath();
+      (function rr2(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();})(g,PX-2,PY-2,PW+4,PH+4,RR+2);
+      g.stroke();
     }
     g.fillStyle='#d4af6a'; g.font='700 40px "Noto Sans SC",sans-serif';
     g.fillText('「'+o.verdict+'」', 375, 715);
