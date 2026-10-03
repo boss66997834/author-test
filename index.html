@@ -335,13 +335,33 @@ function genShare(name){
     img.src = o.photo;
   });
 }
+function countLines(g,text,maxW){
+  let line='',n=1;
+  for(const ch of text){ if(g.measureText(line+ch).width>maxW){n++;line=ch;} else line+=ch; }
+  return n;
+}
 function drawPoster(name,o,url,img,qr){
   const box = document.getElementById("posterbox");
   try{
-    const cv = document.createElement('canvas'); cv.width=750; cv.height=1370;
-    const g = cv.getContext('2d');
-    g.fillStyle='#0b0b0d'; g.fillRect(0,0,750,1370);
-    g.strokeStyle='#d4af6a'; g.lineWidth=3; g.strokeRect(26,26,698,1318);
+    const probe = document.createElement('canvas').getContext('2d');
+    probe.font='700 34px "Noto Sans SC",sans-serif';
+    const vLines=Math.min(2,countLines(probe,'「'+o.verdict+'」',640));
+    probe.font='27px "Noto Sans SC",sans-serif';
+    const qLines=Math.min(4,countLines(probe,'“'+o.quote+'”',600));
+    const PH_TOP=310, PH=390;
+    const yAfterPhoto=PH_TOP+PH+52;
+    const yV=yAfterPhoto+34+ (vLines-1)*48;
+    const yQ1=yV+42;
+    const ySrc=yQ1+(qLines-1)*42+40;
+    const yTag=ySrc+46;
+    const yQR=yTag+46;
+    const yEnd=yQR+216+56;
+    const H=yEnd+26;
+
+    const cv=document.createElement('canvas'); cv.width=750; cv.height=Math.max(H,1240);
+    const g=cv.getContext('2d');
+    g.fillStyle='#0b0b0d'; g.fillRect(0,0,750,cv.height);
+    g.strokeStyle='#d4af6a'; g.lineWidth=3; g.strokeRect(26,26,698,cv.height-52);
     g.textAlign='center';
     g.fillStyle='#d4af6a'; g.font='700 30px "Noto Sans SC",sans-serif';
     g.fillText('你 是 X 人 · 文 豪 人 格 鉴 定', 375, 108);
@@ -350,9 +370,8 @@ function drawPoster(name,o,url,img,qr){
     g.fillStyle='#c9c4b8'; g.font='25px "Noto Sans SC",sans-serif';
     g.fillText(o.full, 375, 278);
     if(img){
-      const PW=300,PH=390,PX=375-PW/2,PY=310,RR=14;
-      g.save(); g.beginPath();
-      rrPath(g,PX,PY,PW,PH,RR); g.clip();
+      const PW=300,PX=375-PW/2,PY=PH_TOP,RR=14;
+      g.save(); g.beginPath(); rrPath(g,PX,PY,PW,PH,RR); g.clip();
       const scale=Math.max(PW/img.width,PH/img.height);
       const dw=img.width*scale, dh=img.height*scale;
       g.drawImage(img,375-dw/2,PY+PH/2-dh/2,dw,dh);
@@ -361,36 +380,36 @@ function drawPoster(name,o,url,img,qr){
       rrPath(g,PX-4,PY-4,PW+8,PH+8,RR+3); g.stroke();
     }
     g.fillStyle='#d4af6a'; g.font='700 34px "Noto Sans SC",sans-serif';
-    wrapText(g,'「'+o.verdict+'」',375,768,640,48,2);
+    wrapText(g,'「'+o.verdict+'」',375,yAfterPhoto,640,48,vLines);
     g.fillStyle='#cfcabf'; g.font='27px "Noto Sans SC",sans-serif';
-    const y = wrapText(g,'“'+o.quote+'”',375,838,600,42,4);
+    wrapText(g,'“'+o.quote+'”',375,yQ1,600,42,qLines);
     g.fillStyle='#9a958c'; g.font='23px "Noto Sans SC",sans-serif';
-    g.fillText('——'+o.src, 375, y+16);
+    g.fillText('——'+o.src, 375, ySrc);
     g.fillStyle='#c9c4b8'; g.font='23px "Noto Sans SC",sans-serif';
-    g.fillText('底色：'+o.tag, 375, 1030);
+    g.fillText('底色：'+o.tag, 375, yTag);
     if(qr){
       const qi=new Image();
       qi.onload=()=>{
         g.fillStyle='#ffffff';
-        g.beginPath(); rrPath(g,375-108,1075,216,216,16); g.fill();
-        g.drawImage(qi,375-94,1089,188,188);
+        g.beginPath(); rrPath(g,375-108,yQR,216,216,16); g.fill();
+        g.drawImage(qi,375-94,yQR+14,188,188);
         g.fillStyle='#d4af6a'; g.font='24px "Noto Sans SC",sans-serif';
-        g.fillText('扫码测测你是哪位文豪', 375, 1348);
+        g.fillText('扫码测测你是哪位文豪', 375, yEnd-6);
         outputPoster(cv,name,box);
       };
-      qi.onerror=()=>{ drawQRfallback(g,url); outputPoster(cv,name,box); };
+      qi.onerror=()=>{ drawQRfallback(g,url,yQR); outputPoster(cv,name,box); };
       qi.src=qr;
-    } else { drawQRfallback(g,url); outputPoster(cv,name,box); }
+    } else { drawQRfallback(g,url,yQR); outputPoster(cv,name,box); }
   }catch(e){
     box.innerHTML='<p class="hint">海报生成失败（本地文件模式限制），文案已复制——线上版支持海报。</p>';
   }
 }
 function rrPath(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
-function drawQRfallback(g,url){
+function drawQRfallback(g,url,y0){
   g.fillStyle='#d4af6a'; g.font='22px "Noto Sans SC",sans-serif';
-  g.fillText('测测你是哪位文豪：', 375, 1125);
+  g.fillText('测测你是哪位文豪：', 375, y0+60);
   g.fillStyle='#9a958c'; g.font='18px "Noto Sans SC",sans-serif';
-  wrapText(g,url,375,1160,600,26,3);
+  wrapText(g,url,375,y0+95,600,26,3);
 }
 function outputPoster(cv,name,box){
   const out=cv.toDataURL('image/png');
