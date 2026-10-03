@@ -437,7 +437,7 @@ const CHAIN = FROM ? (PARENT ? FROM+'>'+PARENT : FROM) : '';
 const CHANNEL = (function(){
   try{
     const ch = new URLSearchParams(location.search).get('ch') || '';
-    const map = {xhs:'小红书', pyq:'朋友圈码', wx:'微信群码', wb:'微博', dy:'抖音'};
+    const map = {xhs:'小红书', pyq:'朋友圈码', wx:'微信群码', wb:'微博', dy:'抖音', other:'其他渠道'};
     if(ch && map[ch]) return map[ch];
     if(ch) return '渠道:'+ch;
     const u = navigator.userAgent || '';
