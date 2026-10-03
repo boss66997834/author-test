@@ -434,6 +434,21 @@ if(location.hash==="#all") window.addEventListener("load",()=>showAll());
 const FROM = (function(){ try{ return new URLSearchParams(location.search).get('from'); }catch(e){ return null; } })();
 const PARENT = (function(){ try{ const t=new URLSearchParams(location.search).get('t'); return t ? decodeURIComponent(escape(atob(t))) : ''; }catch(e){ return ''; } })();
 const CHAIN = FROM ? (PARENT ? FROM+'>'+PARENT : FROM) : '';
+const CHANNEL = (function(){
+  try{
+    const ch = new URLSearchParams(location.search).get('ch') || '';
+    const map = {xhs:'小红书', pyq:'朋友圈码', wx:'微信群码', wb:'微博', dy:'抖音'};
+    if(ch && map[ch]) return map[ch];
+    if(ch) return '渠道:'+ch;
+    const u = navigator.userAgent || '';
+    if(/MicroMessenger/i.test(u)) return '微信内';
+    if(/XiaoHongCheng|xhs/i.test(u)) return '小红书';
+    if(/QQ\//i.test(u) || /TIM/i.test(u)) return 'QQ';
+    if(/WeiBo/i.test(u)) return '微博';
+    if(/Mobile|Android|iPhone/i.test(u)) return '扫码直开';
+    return '电脑';
+  }catch(e){ return '未知'; }
+})();
 if(CHAIN){
   try{
     if(!sessionStorage.getItem('xren_seen')){
@@ -449,7 +464,7 @@ if(CHAIN){
   }catch(e){}
 }
 /* ---- 埋点回传（每次加载计一次 PV） ---- */
-try{ new Image().src = '/api/track?from=' + encodeURIComponent(CHAIN || 'direct'); }catch(e){}
+try{ new Image().src = '/api/track?from=' + encodeURIComponent(CHANNEL + '>' + (CHAIN || '直访')); }catch(e){}
 
 </script>
 </body>
