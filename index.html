@@ -339,44 +339,44 @@ function genShare(name){
 function drawPoster(name,o,url,img,qr){
   const box = document.getElementById("posterbox");
   try{
-    const cv = document.createElement('canvas'); cv.width=750; cv.height=1250;
+    const cv = document.createElement('canvas'); cv.width=750; cv.height=1330;
     const g = cv.getContext('2d');
-    g.fillStyle='#0b0b0d'; g.fillRect(0,0,750,1250);
-    g.strokeStyle='#d4af6a'; g.lineWidth=3; g.strokeRect(26,26,698,1198);
+    g.fillStyle='#0b0b0d'; g.fillRect(0,0,750,1330);
+    g.strokeStyle='#d4af6a'; g.lineWidth=3; g.strokeRect(26,26,698,1278);
     g.textAlign='center';
     g.fillStyle='#d4af6a'; g.font='700 30px "Noto Sans SC",sans-serif';
-    g.fillText('你 是 X 人 · 文 豪 人 格 鉴 定', 375, 105);
-    g.fillStyle='#f2efe9'; g.font='700 100px "Noto Sans SC",sans-serif';
-    g.fillText(name, 375, 235);
-    g.fillStyle='#9a958c'; g.font='25px "Noto Sans SC",sans-serif';
-    g.fillText(o.full, 375, 285);
+    g.fillText('你 是 X 人 · 文 豪 人 格 鉴 定', 375, 108);
+    g.fillStyle='#f2efe9'; g.font='700 96px "Noto Sans SC",sans-serif';
+    g.fillText(name, 375, 232);
+    g.fillStyle='#c9c4b8'; g.font='25px "Noto Sans SC",sans-serif';
+    g.fillText(o.full, 375, 278);
     if(img){
-      const PW=300,PH=390,PX=375-PW/2,PY=480-PH/2,RR=14;
+      const PW=300,PH=390,PX=375-PW/2,PY=310,RR=14;
       g.save(); g.beginPath();
-      (function rr2(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();})(g,PX,PY,PW,PH,RR);
-      g.clip();
+      rrPath(g,PX,PY,PW,PH,RR); g.clip();
       const scale=Math.max(PW/img.width,PH/img.height);
       const dw=img.width*scale, dh=img.height*scale;
       g.drawImage(img,375-dw/2,PY+PH/2-dh/2,dw,dh);
       g.restore();
       g.strokeStyle='#d4af6a'; g.lineWidth=4; g.beginPath();
-      (function rr2(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();})(g,PX-2,PY-2,PW+4,PH+4,RR+2);
-      g.stroke();
+      rrPath(g,PX-4,PY-4,PW+8,PH+8,RR+3); g.stroke();
     }
-    g.fillStyle='#d4af6a'; g.font='700 40px "Noto Sans SC",sans-serif';
-    g.fillText('「'+o.verdict+'」', 375, 715);
+    g.fillStyle='#d4af6a'; g.font='700 34px "Noto Sans SC",sans-serif';
+    wrapText(g,'「'+o.verdict+'」',375,768,640,48,2);
     g.fillStyle='#cfcabf'; g.font='27px "Noto Sans SC",sans-serif';
-    let y = wrapText(g,'“'+o.quote+'”',375,775,600,42,4);
+    const y = wrapText(g,'“'+o.quote+'”',375,838,600,42,4);
     g.fillStyle='#9a958c'; g.font='23px "Noto Sans SC",sans-serif';
-    g.fillText('——'+o.src, 375, y+18);
-    g.fillStyle='#9a958c'; g.font='22px "Noto Sans SC",sans-serif';
-    g.fillText('底色：'+o.tag, 375, 960);
+    g.fillText('——'+o.src, 375, y+16);
+    g.fillStyle='#c9c4b8'; g.font='23px "Noto Sans SC",sans-serif';
+    g.fillText('底色：'+o.tag, 375, 1030);
     if(qr){
       const qi=new Image();
       qi.onload=()=>{
-        g.drawImage(qi,375-95,1000,190,190);
+        g.fillStyle='#ffffff';
+        g.beginPath(); rrPath(g,375-108,1055,216,216,16); g.fill();
+        g.drawImage(qi,375-94,1069,188,188);
         g.fillStyle='#d4af6a'; g.font='24px "Noto Sans SC",sans-serif';
-        g.fillText('扫码测测你是哪位文豪', 375, 1232);
+        g.fillText('扫码测测你是哪位文豪', 375, 1308);
         outputPoster(cv,name,box);
       };
       qi.onerror=()=>{ drawQRfallback(g,url); outputPoster(cv,name,box); };
@@ -386,11 +386,12 @@ function drawPoster(name,o,url,img,qr){
     box.innerHTML='<p class="hint">海报生成失败（本地文件模式限制），文案已复制——线上版支持海报。</p>';
   }
 }
+function rrPath(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
 function drawQRfallback(g,url){
   g.fillStyle='#d4af6a'; g.font='22px "Noto Sans SC",sans-serif';
-  g.fillText('测测你是哪位文豪：', 375, 1040);
+  g.fillText('测测你是哪位文豪：', 375, 1105);
   g.fillStyle='#9a958c'; g.font='18px "Noto Sans SC",sans-serif';
-  wrapText(g,url,375,1075,600,26,3);
+  wrapText(g,url,375,1140,600,26,3);
 }
 function outputPoster(cv,name,box){
   const out=cv.toDataURL('image/png');
