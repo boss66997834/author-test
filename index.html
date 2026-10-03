@@ -249,7 +249,6 @@ function finish(){
       <div class="relrow"><b>最让你沉默的：${key.worst[0]}</b><span>（${key.worst[1]}）</span></div>
     </div>
     <div class="bar4">${bars}</div>
-    ${fromBadgeHTML()}
     <button class="btn" onclick="genShare('${name}')">生 成 分 享 海 报</button>
     <button class="btn ghost" onclick="showAll()">看 看 其 他 十 五 人</button>
     <button class="btn ghost" onclick="startQuiz()">再 测 一 次</button>
@@ -266,8 +265,9 @@ function finish(){
 
 function shareURL(name){
   const base = location.origin && location.origin!=='null' ? location.origin+location.pathname : location.href.split('#')[0].split('?')[0];
-  const chain = FROM ? [name].concat(FROM.split('>').slice(0,2)).join('>') : name;
-  return base+'?from='+encodeURIComponent(chain);
+  let url = base+'?from='+encodeURIComponent(name);
+  if(PARENT){ try{ url += '&t=' + encodeURIComponent(btoa(unescape(encodeURIComponent(PARENT.split('>').slice(0,2).join('>'))))); }catch(e){} }
+  return url;
 }
 function renderHidden(mode){
   const v = answers[0];
@@ -287,7 +287,6 @@ function renderHidden(mode){
       <div class="relrow"><b>最懂你的：${key.best[0]}</b><span>（${key.best[1]}）</span></div>
       <div class="relrow"><b>最让你沉默的：${key.worst[0]}</b><span>（${key.worst[1]}）</span></div>
     </div>
-    ${fromBadgeHTML()}
     <button class="btn" onclick="genShare('${name}')">生 成 分 享 海 报</button>
     <button class="btn ghost" onclick="startQuiz()">重 新 鉴 定</button>
     <div class="sharebox" id="sharebox"></div>
@@ -414,30 +413,25 @@ if(location.hash==="#all") window.addEventListener("load",()=>showAll());
 
 /* ---- from 来源统计（纯前端：localStorage 聚合，会话去重） ---- */
 const FROM = (function(){ try{ return new URLSearchParams(location.search).get('from'); }catch(e){ return null; } })();
-if(FROM){
+const PARENT = (function(){ try{ const t=new URLSearchParams(location.search).get('t'); return t ? decodeURIComponent(escape(atob(t))) : ''; }catch(e){ return ''; } })();
+const CHAIN = FROM ? (PARENT ? FROM+'>'+PARENT : FROM) : '';
+if(CHAIN){
   try{
     if(!sessionStorage.getItem('xren_seen')){
       sessionStorage.setItem('xren_seen','1');
-      const parts=FROM.split('>');
       const kd='xren_from_direct', kc='xren_from_chain';
       const cd=JSON.parse(localStorage.getItem(kd)||'{}');
-      cd[parts[0]]=(cd[parts[0]]||0)+1;
+      cd[FROM]=(cd[FROM]||0)+1;
       localStorage.setItem(kd,JSON.stringify(cd));
       const cc=JSON.parse(localStorage.getItem(kc)||'{}');
-      cc[FROM]=(cc[FROM]||0)+1;
+      cc[CHAIN]=(cc[CHAIN]||0)+1;
       localStorage.setItem(kc,JSON.stringify(cc));
     }
   }catch(e){}
 }
 /* ---- 埋点回传（每次加载计一次 PV） ---- */
-try{ new Image().src = '/api/track?from=' + encodeURIComponent(FROM || 'direct'); }catch(e){}
+try{ new Image().src = '/api/track?from=' + encodeURIComponent(CHAIN || 'direct'); }catch(e){}
 
-function fromBadgeHTML(){
-  if(!FROM) return '';
-  const parts=FROM.split('>');
-  const chainNote = parts.length>1 ? '（这条传播链从〔'+parts[parts.length-1]+'〕开始）' : '';
-  return '<p class="hint" style="margin:10px 0 0;color:#6f6a61">你经〔'+parts[0]+'〕的分享而来'+chainNote+'</p>';
-}
 </script>
 </body>
 </html>
