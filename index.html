@@ -339,10 +339,10 @@ function genShare(name){
 function drawPoster(name,o,url,img,qr){
   const box = document.getElementById("posterbox");
   try{
-    const cv = document.createElement('canvas'); cv.width=750; cv.height=1330;
+    const cv = document.createElement('canvas'); cv.width=750; cv.height=1370;
     const g = cv.getContext('2d');
-    g.fillStyle='#0b0b0d'; g.fillRect(0,0,750,1330);
-    g.strokeStyle='#d4af6a'; g.lineWidth=3; g.strokeRect(26,26,698,1278);
+    g.fillStyle='#0b0b0d'; g.fillRect(0,0,750,1370);
+    g.strokeStyle='#d4af6a'; g.lineWidth=3; g.strokeRect(26,26,698,1318);
     g.textAlign='center';
     g.fillStyle='#d4af6a'; g.font='700 30px "Noto Sans SC",sans-serif';
     g.fillText('你 是 X 人 · 文 豪 人 格 鉴 定', 375, 108);
@@ -373,10 +373,10 @@ function drawPoster(name,o,url,img,qr){
       const qi=new Image();
       qi.onload=()=>{
         g.fillStyle='#ffffff';
-        g.beginPath(); rrPath(g,375-108,1055,216,216,16); g.fill();
-        g.drawImage(qi,375-94,1069,188,188);
+        g.beginPath(); rrPath(g,375-108,1075,216,216,16); g.fill();
+        g.drawImage(qi,375-94,1089,188,188);
         g.fillStyle='#d4af6a'; g.font='24px "Noto Sans SC",sans-serif';
-        g.fillText('扫码测测你是哪位文豪', 375, 1308);
+        g.fillText('扫码测测你是哪位文豪', 375, 1348);
         outputPoster(cv,name,box);
       };
       qi.onerror=()=>{ drawQRfallback(g,url); outputPoster(cv,name,box); };
@@ -389,9 +389,9 @@ function drawPoster(name,o,url,img,qr){
 function rrPath(g,x,y,w,h,r){g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
 function drawQRfallback(g,url){
   g.fillStyle='#d4af6a'; g.font='22px "Noto Sans SC",sans-serif';
-  g.fillText('测测你是哪位文豪：', 375, 1105);
+  g.fillText('测测你是哪位文豪：', 375, 1125);
   g.fillStyle='#9a958c'; g.font='18px "Noto Sans SC",sans-serif';
-  wrapText(g,url,375,1140,600,26,3);
+  wrapText(g,url,375,1160,600,26,3);
 }
 function outputPoster(cv,name,box){
   const out=cv.toDataURL('image/png');
