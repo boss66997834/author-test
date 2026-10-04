@@ -173,11 +173,6 @@ function showAll(){
       box.appendChild(d);
     });
   });
-  const ho=HIDDEN.card, hk=HIDDEN.key;
-  const hid=document.createElement("div");
-  hid.className="allhead";
-  hid.innerHTML=`<img src="${ho.photo}" onerror="this.outerHTML='<div class=&quot;phv&quot;>${hk[0]}</div>'"><div><div class="t">${hk} ${HIDDEN.emo}</div><div class="f">${ho.full} ｜ ${ho.tag}</div></div><div style="margin-left:auto;text-align:right;color:var(--gold);font-size:15px;flex:0 0 auto">「${HIDDEN.allBadge}」<div class="f" style="color:var(--dim);font-size:12px;margin-top:4px">${HIDDEN.allTag}</div></div>`;
-  box.appendChild(hid);
   show("p-all");
 }
 
