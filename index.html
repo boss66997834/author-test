@@ -47,11 +47,14 @@
   .relrow{background:var(--soft);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
   .relrow b{color:var(--gold);font-size:17px;letter-spacing:1px}
   .relrow span{display:block;color:var(--dim);font-size:13.5px;margin-top:3px}
-  .bar4{display:flex;gap:6px;margin:18px 0}
-  .axbar{flex:1;text-align:center}
-  .axbar .lbl{font-size:11px;color:var(--dim);margin-bottom:4px;letter-spacing:1px}
-  .axbar .tr{height:6px;background:var(--line);border-radius:3px;position:relative;overflow:hidden}
-  .axbar .tr i{position:absolute;top:0;bottom:0;background:var(--gold)}
+  .axes{display:flex;flex-direction:column;gap:16px;margin:22px 0 6px;text-align:left}
+  .axends{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+  .axends span{font-size:14px;letter-spacing:1px;color:var(--dim)}
+  .axends .win{color:var(--gold);font-weight:700;font-size:15px}
+  .axbar{position:relative;height:12px;border-radius:7px;background:var(--soft);border:1px solid var(--line);overflow:hidden}
+  .axbar .fillL{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#9c7a3d,var(--gold));border-radius:7px 0 0 7px}
+  .axbar .fillR{position:absolute;right:0;top:0;bottom:0;background:linear-gradient(270deg,#454b54,#33383f);border-radius:0 7px 7px 0}
+  .axbar .axmid{position:absolute;left:50%;top:-1px;bottom:-1px;width:2px;background:rgba(242,239,233,.45);z-index:2}
   .cc{margin-top:52px;padding-top:18px;border-top:1px solid var(--line);color:var(--dim);font-size:12px;line-height:1.9;text-align:center}
   .cc a{color:var(--dim)}
   .sharebox{background:var(--soft);border:1px dashed var(--line);border-radius:10px;padding:14px;margin-top:16px;font-size:14px;color:var(--dim);text-align:left;word-break:break-all}
@@ -233,7 +236,7 @@ function finish(){
   const bars = [
     ["孤独",pct("孤独","热闹"),"热闹"],["精确",pct("精确","乱飞"),"乱飞"],
     ["毒舌",pct("毒舌","心软"),"心软"],["苦役",pct("苦役","放浪"),"放浪"]
-  ].map(([l,p,r])=>`<div class="axbar"><div class="lbl">${l} ${p}%</div><div class="tr"><i style="width:${p}%"></i></div><div class="lbl">${r} ${100-p}%</div></div>`).join("");
+  ].map(([l,p,r])=>`<div class="axrow"><div class="axends"><span class="${p>=50?'win':''}">${l} ${p}%</span><span class="${p<50?'win':''}">${r} ${100-p}%</span></div><div class="axbar"><i class="fillL" style="width:${p}%"></i><i class="fillR" style="width:${100-p}%"></i><b class="axmid"></b></div></div>`).join("");
 
   const el = document.getElementById("p-result");
   el.innerHTML = `
@@ -249,7 +252,7 @@ function finish(){
       <div class="relrow"><b>最懂你的：${key.best[0]}</b><span>（${key.best[1]}）</span></div>
       <div class="relrow"><b>最让你沉默的：${key.worst[0]}</b><span>（${key.worst[1]}）</span></div>
     </div>
-    <div class="bar4">${bars}</div>
+    <div class="axes">${bars}</div>
     <button class="btn" onclick="genShare('${name}')">生 成 分 享 海 报</button>
     <button class="btn ghost" onclick="showAll()">看 看 其 他 十 五 人</button>
     <button class="btn ghost" onclick="startQuiz()">再 测 一 次</button>
