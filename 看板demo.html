@@ -1,0 +1,56 @@
+<!DOCTYPE html><html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>埋点看板</title><style>
+body{background:#0b0b0d;color:#f2efe9;font-family:"Noto Sans SC","Microsoft YaHei",sans-serif;margin:0;padding:22px}
+h1{font-size:20px;letter-spacing:2px;color:#d4af6a;margin-bottom:2px}
+p.sum{color:#9a958c;font-size:13px}
+table{width:100%;max-width:1100px;border-collapse:collapse;margin-top:8px}
+td{padding:7px 9px;border-bottom:1px solid #2a2a30;font-size:13px}
+b{color:#d4af6a}
+.d{display:block;color:#9a958c;font-size:12px;margin-top:2px}
+.d2{color:#9a958c;font-size:12px}
+.nowrap{white-space:nowrap}
+.tag{display:inline-block;background:#221d10;border:1px solid #4a3d20;color:#d4af6a;border-radius:999px;padding:1px 10px;margin:2px 3px 2px 0;font-size:12px}
+.bar{display:flex;gap:10px;align-items:center;margin:10px 0 4px;flex-wrap:wrap}
+#kw{flex:1 1 260px;background:#17171c;border:1px solid #2a2a30;color:#f2efe9;border-radius:8px;padding:9px 14px;font-size:14px}
+#kw:focus{outline:none;border-color:#d4af6a}
+.sel{background:#17171c;border:1px solid #2a2a30;color:#f2efe9;border-radius:8px;padding:8px 10px;font-size:13px}
+#hit{color:#9a958c;font-size:12px;margin-left:8px}
+.nav{margin:6px 0}
+.nav a{color:#d4af6a;margin:0 8px}
+.off{color:#4a4a4a;margin:0 8px}
+h2{font-size:15px;color:#d4af6a;margin:24px 0 2px;font-weight:600}
+tr.hide{display:none}
+</style></head><body>
+<h1>埋点看板</h1>
+<p class="sum">总到访 7 ｜ 明细 7 条（已全部载入） ｜ 时间为东八区 ｜ 明细保留 90 天</p>
+
+<h2>来源 Top 15</h2>
+<table><tbody><tr><td>1</td><td><b>小红书</b><span class="d">链：小红书 → 直访</span></td><td>3</td><td>42.9%</td></tr><tr><td>2</td><td><b>微信内</b><span class="d">链：微信内 → 天下粮仓</span></td><td>1</td><td>14.3%</td></tr><tr><td>3</td><td><b>微信内</b><span class="d">链：微信内 → 马人 → 宰人 → 树人</span></td><td>1</td><td>14.3%</td></tr><tr><td>4</td><td><b>朋友圈码</b><span class="d">链：朋友圈码 → 直访</span></td><td>1</td><td>14.3%</td></tr><tr><td>5</td><td><b>电脑</b><span class="d">链：电脑 → 直访</span></td><td>1</td><td>14.3%</td></tr></tbody></table>
+
+<h2>结果分布</h2>
+<p><span class="tag">卡人 ×1</span><span class="tag">大帅 ×1</span><span class="tag">陀人 ×1</span><span class="tag">宰人 ×1</span><span class="tag">树人 ×1</span></p>
+
+<h2>明细</h2>
+<div class="bar">
+  <input id="kw" placeholder="🔍 输入即筛：渠道 / uid / 结果 / 地区 / 手机型号…">
+  <select class="sel" id="evf"><option value="">全部事件</option><option value="enter">进入</option><option value="result">结果</option><option value="exit">退出</option></select>
+  <span id="hit"></span>
+</div>
+<table id="logs"><thead><tr><td>时间</td><td>事件/结果</td><td>渠道>链</td><td>停留</td><td>uid</td><td>设备</td><td>地区</td><td>UA</td></tr></thead><tbody><tr data-k="电脑&gt;直访 u7g 卡人 result america/new_york 156.146.x " data-ev="result"><td class="nowrap">10-04 20:17</td><td>结果<b>卡人</b></td><td class="d2">电脑&gt;直访</td><td class="nowrap">60s</td><td class="d2">u7g</td><td class="d2 nowrap"> </td><td class="d2 nowrap">America/New York 156.146.x</td><td class="d2"></td></tr><tr data-k="小红书&gt;直访 u6f 大帅 result asia/shanghai 223.104.x " data-ev="result"><td class="nowrap">10-04 19:15</td><td>结果<b>大帅</b></td><td class="d2">小红书&gt;直访</td><td class="nowrap">70s</td><td class="d2">u6f</td><td class="d2 nowrap"> </td><td class="d2 nowrap">中国 223.104.x</td><td class="d2"></td></tr><tr data-k="微信内&gt;马人&gt;宰人&gt;树人 u5e 陀人 result asia/shanghai 36.110.x " data-ev="result"><td class="nowrap">10-04 18:13</td><td>结果<b>陀人</b></td><td class="d2">微信内&gt;马人&gt;宰人&gt;树人</td><td class="nowrap">150s</td><td class="d2">u5e</td><td class="d2 nowrap"> </td><td class="d2 nowrap">中国 36.110.x</td><td class="d2"></td></tr><tr data-k="微信内&gt;天下粮仓 u3c 宰人 result asia/shanghai 120.85.x " data-ev="result"><td class="nowrap">10-04 17:12</td><td>结果<b>宰人</b></td><td class="d2">微信内&gt;天下粮仓</td><td class="nowrap">210s</td><td class="d2">u3c</td><td class="d2 nowrap"> </td><td class="d2 nowrap">中国 120.85.x</td><td class="d2"></td></tr><tr data-k="朋友圈码&gt;直访 u2b  exit asia/shanghai 117.136.x " data-ev="exit"><td class="nowrap">10-04 16:10</td><td>退出</td><td class="d2">朋友圈码&gt;直访</td><td class="nowrap">45s</td><td class="d2">u2b</td><td class="d2 nowrap"> </td><td class="d2 nowrap">中国 117.136.x</td><td class="d2"></td></tr><tr data-k="小红书&gt;直访 u1a 树人 result asia/shanghai 223.104.x " data-ev="result"><td class="nowrap">10-04 15:08</td><td>结果<b>树人</b></td><td class="d2">小红书&gt;直访</td><td class="nowrap">186s</td><td class="d2">u1a</td><td class="d2 nowrap"> </td><td class="d2 nowrap">中国 223.104.x</td><td class="d2"></td></tr><tr data-k="小红书&gt;直访 u1a  enter asia/shanghai 223.104.x " data-ev="enter"><td class="nowrap">10-04 14:07</td><td>进入</td><td class="d2">小红书&gt;直访</td><td class="nowrap">30s</td><td class="d2">u1a</td><td class="d2 nowrap"> </td><td class="d2 nowrap">中国 223.104.x</td><td class="d2"></td></tr></tbody></table>
+<p class="nav"><a href="?page=1">« 首</a> <span class="off">‹ 上页</span> <span style="color:#9a958c">第 1/1 页</span> <span class="off">下页 ›</span> <a href="?page=1">末页 »</a></p>
+<script>
+(function(){
+  var kw=document.getElementById('kw'), evf=document.getElementById('evf'), hit=document.getElementById('hit');
+  var trs=document.querySelectorAll('#logs tbody tr');
+  function f(){
+    var k=kw.value.trim().toLowerCase(), e=evf.value, n=0;
+    trs.forEach(function(tr){
+      var ok=(!k||tr.getAttribute('data-k').indexOf(k)>-1)&&(!e||tr.getAttribute('data-ev')===e);
+      tr.className=ok?'':'hide'; if(ok)n++;
+    });
+    hit.textContent='命中 '+n+' / '+trs.length;
+  }
+  kw.addEventListener('input',f); evf.addEventListener('change',f); f();
+})();
+</script>
+</body></html>
